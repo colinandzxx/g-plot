@@ -15,10 +15,6 @@ NVCCFLAGS = \
 	# -Xcompiler -fPIC
 	# --compiler-options "-Wall -Wfatal-errors -Ofast -DOPENCV -DGPU -DCUDNN -fPIC"
 
-# CUDA_SRC = cudaTest.cu
-# CUDA_OBJ = $(CUDA_SRC:.cu=.o)
-# CUDA_LIB = libtest.so
-
 CUDA_LIB_NAME = shabal
 CUDA_SRC = shabal.cu
 CUDA_OBJ = $(CUDA_SRC:.cu=.o)
