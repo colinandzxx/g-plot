@@ -1,26 +1,32 @@
 cmake_minimum_required(VERSION 3.0.0)
 
-SET(CMAKE_C_COMPILER /usr/bin/gcc)
-SET(CMAKE_CXX_COMPILER /usr/bin/g++)
-SET(CMAKE_CUDA_COMPILER /usr/local/cuda/bin/nvcc)
+set(CMAKE_VERBOSE_MAKEFILE TRUE)
 
-set( ENV{CUDA_HOME} /usr/local/cuda )
+set(CMAKE_C_COMPILER /usr/bin/gcc)
+set(CMAKE_CXX_COMPILER /usr/bin/g++)
+set(CMAKE_CUDA_COMPILER /usr/local/cuda/bin/nvcc)
+set(CUDA_CUDART_LIBRARY /usr/local/cuda/lib64/libcudart.so)
+set(ENV{CUDA_HOME} /usr/local/cuda)
 
 set(CMAKE_SKIP_BUILD_RPATH TRUE) 
 
-project(sphshabal VERSION 0.1.0 LANGUAGES CXX CUDA)
 
+project(sphshabal VERSION 0.1.0 LANGUAGES CXX)
+# enable CUDA
+enable_language(CUDA)
+find_package(CUDA)
 
-# cmake寻找cuda，这个要现在系统里面装好cuda，设置好cuda的环境参数啥的
-FIND_PACKAGE(CUDA REQUIRED)
-
-# set( ENV{CUDACXX} $ENV{CUDA_HOME}/bin/nvcc )
-# set( ENV{PATH} $PATH:$CUDA_HOME/bin )
+# set FLAGS
+# C++和CUDA的编译参数，可选。
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -O3")
+set(CMAKE_CUDA_FLAGS "${CMAKE_CUDA_FLAGS} -std=c++11 --gpu-architecture=compute_61 --gpu-code=compute_61 --compiler-options \"-Wall -Wfatal-errors -Ofast -DOPENCV -DGPU -DCUDNN -fPIC\"")
 
 include(CTest)
 enable_testing()
 
 add_library(${PROJECT_NAME} SHARED shabal.cu)
+# target_compile_features(${PROJECT_NAME} PUBLIC cxx_std_11)
+
 # add_library(${PROJECT_NAME}_shared SHARED shabal.cu)
 # add_library(${PROJECT_NAME}_static STATIC shabal.cu)
 
