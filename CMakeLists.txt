@@ -1,4 +1,5 @@
-cmake_minimum_required(VERSION 3.0.0)
+cmake_minimum_required(VERSION 3.10.0)
+project(sphshabal VERSION 0.1.0 LANGUAGES CXX)
 
 set(CMAKE_VERBOSE_MAKEFILE TRUE)
 
@@ -10,8 +11,6 @@ set(ENV{CUDA_HOME} /usr/local/cuda)
 
 set(CMAKE_SKIP_BUILD_RPATH TRUE) 
 
-
-project(sphshabal VERSION 0.1.0 LANGUAGES CXX)
 # enable CUDA
 enable_language(CUDA)
 find_package(CUDA)
@@ -24,7 +23,7 @@ set(CMAKE_CUDA_FLAGS "${CMAKE_CUDA_FLAGS} -std=c++11 --gpu-architecture=compute_
 include(CTest)
 enable_testing()
 
-add_library(${PROJECT_NAME} SHARED shabal.cu)
+add_library(${PROJECT_NAME} SHARED sph_shabal.cu)
 # target_compile_features(${PROJECT_NAME} PUBLIC cxx_std_11)
 
 # add_library(${PROJECT_NAME}_shared SHARED shabal.cu)
