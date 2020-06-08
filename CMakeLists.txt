@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.10.0)
 project(sphshabal VERSION 0.1.0 LANGUAGES CXX)
 
-set(CMAKE_VERBOSE_MAKEFILE TRUE)
+set(CMAKE_VERBOSE_MAKEFILE ON)
 
 set(CMAKE_C_COMPILER /usr/bin/gcc)
 set(CMAKE_CXX_COMPILER /usr/bin/g++)
@@ -9,7 +9,7 @@ set(CMAKE_CUDA_COMPILER /usr/local/cuda/bin/nvcc)
 set(CUDA_CUDART_LIBRARY /usr/local/cuda/lib64/libcudart.so)
 set(ENV{CUDA_HOME} /usr/local/cuda)
 
-set(CMAKE_SKIP_BUILD_RPATH TRUE) 
+set(CMAKE_SKIP_BUILD_RPATH ON) 
 
 # enable CUDA
 enable_language(CUDA)
