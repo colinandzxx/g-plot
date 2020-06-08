@@ -749,6 +749,8 @@ __device__ void sph_shabal512_addbits_and_close(void *cc, unsigned ub, unsigned 
   shabal_close(cc, ub, n, dst, 16);
 }
 
+// https://zh.wikipedia.org/wiki/NVIDIA%E9%A1%AF%E7%A4%BA%E6%A0%B8%E5%BF%83%E5%88%97%E8%A1%A8#GeForce_900
+// GTX960 GTX1060
 #define THREADS_PER_BLOCK 1024
 #define GIRD_NUM 10240
 
