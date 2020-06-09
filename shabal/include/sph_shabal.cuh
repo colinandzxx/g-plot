@@ -37,7 +37,7 @@
 #define SPH_SHABAL_H__
 
 #include <stddef.h>
-#include "sph_types.h"
+#include "sph_types.cuh"
 
 /**
  * Output size (in bits) for Shabal-192.
