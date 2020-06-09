@@ -56,40 +56,46 @@ inline int gpuAssert(cudaError_t code, const char *file, int line,
   return code;
 }
 
+#define FOR_TEST 1
 __global__ void sha(uint8_t *g_out) {
   uint32_t global_id = blockDim.x * blockIdx.x + threadIdx.x;
   // uint32_t id = global_id % THREADS_PER_BLOCK;
 
-  sph_shabal256_context cc;
-  sph_shabal256_init(&cc);
-  char str[] = "123";
-  sph_shabal256(&cc, str, sizeof(str) - 1);
-  // char dst[32] = {};
-  sph_shabal256_close(&cc, g_out + global_id * 32);
-  // printf("AAAA: %s\n", dst);
+  // for (int i = 0; i < FOR_TEST; i++) {
+    sph_shabal256_context cc;
+    sph_shabal256_init(&cc);
+    char str[] = "123";
+    sph_shabal256(&cc, str, sizeof(str) - 1);
+    // char dst[32] = {};
+    sph_shabal256_close(&cc, g_out + global_id * 32);
+    // printf("AAAA: %s\n", dst);
+  // }
 }
 
 int testCuda() {
   uint8_t *g_out;
   uint8_t *out;
 
-  out = (uint8_t *)malloc(GIRD_NUM * THREADS_PER_BLOCK * 32);
+  out = (uint8_t *)malloc(GIRD_NUM * THREADS_PER_BLOCK * 32 * FOR_TEST);
 
-  if (cudaMalloc((void **)&g_out, GIRD_NUM * THREADS_PER_BLOCK * 32) !=
+  if (cudaMalloc((void **)&g_out, GIRD_NUM * THREADS_PER_BLOCK * 32 * FOR_TEST) !=
       cudaSuccess) {
     printf("E01: cuda alloc memory error for nonce\n");
-    return 0;
+    return 1;
   }
 
   sha<<<GIRD_NUM, THREADS_PER_BLOCK>>>(g_out);
-  printf("CUDA error: %s\n", cudaGetErrorString(cudaGetLastError()));
+  auto err = cudaGetLastError();
+  printf("CUDA error: %s\n", cudaGetErrorString(err));
+  if (err != cudaSuccess)
+    return err;
 
   cudaDeviceSynchronize();
 
-  if (cudaMemcpy(out, g_out, GIRD_NUM * THREADS_PER_BLOCK * 32,
+  if (cudaMemcpy(out, g_out, GIRD_NUM * THREADS_PER_BLOCK * 32 * FOR_TEST,
                  cudaMemcpyDeviceToHost) != cudaSuccess) {
     printf("E07: copy memory error for g_nonce_id\n");
-    return 0;
+    return 1;
   }
 
   cudaFree(g_out);
@@ -105,6 +111,8 @@ int testCuda() {
 
   return 0;
 }
+
+__global__ void p_shabal(uint64_t start_nr, uint8_t *g_sols) {}
 
 struct plotter_ctx {
   bool abort;
@@ -143,7 +151,9 @@ struct plotter_ctx {
   int plot(uint64_t start_nr) {
     checkCudaErrors(cudaMalloc((void **)&g_start_nr, sizeof(uint64_t)));
     checkCudaErrors(cudaMemcpy(g_start_nr, &start_nr, sizeof(uint64_t),
-                                 cudaMemcpyHostToDevice));
+                               cudaMemcpyHostToDevice));
+
+    p_shabal<<<grids, THREADS_PER_BLOCK>>>(*g_start_nr, g_sols);
 
     return 0;
   }

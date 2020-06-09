@@ -22,7 +22,7 @@ TEST(shabal, 01)
 {
     printf("this is a test\n");
     clock_t start = clock();
-    testCuda();
+    ASSERT_TRUE(testCuda() == 0);
     clock_t end = clock();
     printf("tm: %lf\n", (double)(end - start) / CLOCKS_PER_SEC);
 }
