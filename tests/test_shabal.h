@@ -8,6 +8,7 @@ extern "C"
 
     int testCuda();
     void GPU_Count();
+    void testPlot();
 
 #ifdef __cplusplus
 }

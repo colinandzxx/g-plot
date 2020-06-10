@@ -27,3 +27,11 @@ TEST(shabal, 01)
     clock_t end = clock();
     printf("tm: %lf\n", (double)(end - start) / CLOCKS_PER_SEC);
 }
+
+TEST(shabal, plot_ctx)
+{
+    clock_t start = clock();
+    testPlot();
+    clock_t end = clock();
+    printf("tm: %lf\n", (double)(end - start) / CLOCKS_PER_SEC);
+}

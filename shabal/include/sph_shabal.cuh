@@ -334,7 +334,11 @@ __device__ void sph_shabal512_close(void *cc, void *dst);
 __device__ void sph_shabal512_addbits_and_close(
 	void *cc, unsigned ub, unsigned n, void *dst);
 
-extern "C" int testCuda();
-extern "C" void GPU_Count();
+extern "C"
+{
+	int testCuda();
+	void GPU_Count();
+	void testPlot();
+}
 
 #endif
