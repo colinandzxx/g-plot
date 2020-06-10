@@ -20,6 +20,7 @@
 
 TEST(shabal, 01)
 {
+    GPU_Count();
     printf("this is a test\n");
     clock_t start = clock();
     ASSERT_TRUE(testCuda() == 0);
