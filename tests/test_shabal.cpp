@@ -34,3 +34,8 @@ TEST(shabal, plot_ctx)
     }
     fclose(fp);
 }
+
+TEST(shabal, test_C_Process)
+{
+    test_C_Process();
+}

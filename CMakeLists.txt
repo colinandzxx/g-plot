@@ -30,7 +30,7 @@ foreach(_test_file ${TEST_SRCS})
   add_executable(${_test_name} ${_test_file})
   target_link_libraries(${_test_name} ${GTEST_BOTH_LIBRARIES}
                         ${CMAKE_THREAD_LIBS_INIT})
-  target_link_libraries(${_test_name} sphshabal)
+  target_link_libraries(${_test_name} plot)
   target_include_directories(${_test_name} PUBLIC ${PROJECT_SOURCE_DIR}/shabal/include)
   add_test(${_test_name} ${_test_name})
   # set_tests_properties(${_test_name} PROPERTIES TIMEOUT 5)

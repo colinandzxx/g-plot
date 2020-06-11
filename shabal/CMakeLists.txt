@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.10.0)
 project(
   sphshabal
   VERSION 0.1.0
-  LANGUAGES CXX)
+  LANGUAGES C)
 
 set(CMAKE_CUDA_COMPILER /usr/local/cuda/bin/nvcc)
 # set(CUDA_CUDART_LIBRARY /usr/local/cuda/lib64/libcudart.so) set(ENV{CUDA_HOME}
@@ -19,10 +19,12 @@ set(CMAKE_CUDA_FLAGS
 )
 
 # source directory aux_source_directory(src DIR_SRCS)
-file(GLOB DIR_SRCS src/*.cu)
+file(GLOB DIR_CU_SRCS src/*.cu)
+file(GLOB DIR_SRCS src/*.c)
 
-# add library file
-add_library(sphshabal SHARED ${DIR_SRCS})
+# add library file add_library(sphshabal SHARED ${DIR_SRCS})
+add_library(plot_cu OBJECT ${DIR_CU_SRCS})
+add_library(plot SHARED ${DIR_SRCS} $<TARGET_OBJECTS:plot_cu>)
 
 # add_library(${PROJECT_NAME}_shared SHARED shabal.cu)
 # add_library(${PROJECT_NAME}_static STATIC shabal.cu)
@@ -33,5 +35,5 @@ add_library(sphshabal SHARED ${DIR_SRCS})
 # set_target_properties(sphshabal_static PROPERTIES CLEAN_DIRECT_OUTPUT 1)
 
 # head file path
-target_include_directories(sphshabal
-                           PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/include")
+target_include_directories(plot_cu PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/include")
+target_include_directories(plot PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/include")

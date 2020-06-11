@@ -62,6 +62,7 @@ inline int gpuAssert(cudaError_t code, const char *file, int line,
   return code;
 }
 
+// for test
 __global__ void testSha(uint8_t *g_out) {
   uint32_t global_id = blockDim.x * blockIdx.x + threadIdx.x;
   // uint32_t gid = global_id / THREADS_PER_BLOCK;
@@ -140,6 +141,7 @@ __global__ void testSha(uint8_t *g_out) {
   }
 }
 
+// for test
 int testCuda() {
   uint8_t *out;
   uint8_t *g_out;
@@ -217,7 +219,7 @@ __global__ void plot_poc1(uint64_t *addr, uint64_t *start_nr, uint8_t *g_sols) {
   }
 }
 
-struct plotter_ctx {
+struct plot_ctx {
   uint64_t grids;
   uint8_t *sols;
 
@@ -225,7 +227,7 @@ struct plotter_ctx {
   uint64_t *g_start_nr;
   uint8_t *g_sols;
 
-  plotter_ctx(const uint64_t grids) : grids(grids) {
+  plot_ctx(const uint64_t grids) : grids(grids) {
     sols = (uint8_t *)malloc(PLOT_SIZE * THREADS_PER_BLOCK * grids);
     assert(sols != NULL);
 
@@ -235,7 +237,7 @@ struct plotter_ctx {
         cudaMalloc((void **)&g_sols, PLOT_SIZE * THREADS_PER_BLOCK * grids));
   }
 
-  ~plotter_ctx() {
+  ~plot_ctx() {
     free(sols);
     checkCudaErrors_V(cudaFree(g_addr));
     checkCudaErrors_V(cudaFree(g_start_nr));
@@ -296,24 +298,9 @@ struct plotter_ctx {
   }
 };
 
-void GPU_Count() {
-  int num;
-  cudaDeviceProp prop;
-  cudaGetDeviceCount(&num);
-  printf("deviceCount := %d\n", num);
-  for (int i = 0; i < num; i++) {
-    cudaGetDeviceProperties(&prop, i);
-    printf("name:%s\n", prop.name);
-    printf("totalGlobalMem:%lu GB\n", prop.totalGlobalMem / 1024 / 1024 / 1024);
-    printf("multiProcessorCount:%d\n", prop.multiProcessorCount);
-    printf("maxThreadsPerBlock:%d\n", prop.maxThreadsPerBlock);
-    printf("sharedMemPerBlock:%lu KB\n", prop.sharedMemPerBlock / 1024);
-    printf("major:%d,minor:%d\n", prop.major, prop.minor);
-  }
-}
-
+// for test
 void testPlot(void *buffer) {
-  plotter_ctx *ctx = new plotter_ctx(10);
+  plot_ctx *ctx = new plot_ctx(10);
   ctx->reset();
   uint64_t num = 0;
   auto ret = ctx->plot2(1ul, 0ul, num);
@@ -335,4 +322,44 @@ void testPlot(void *buffer) {
     // }
   }
   delete ctx;
+}
+
+void GPU_Count() {
+  int num;
+  cudaDeviceProp prop;
+  cudaGetDeviceCount(&num);
+  printf("deviceCount := %d\n", num);
+  for (int i = 0; i < num; i++) {
+    cudaGetDeviceProperties(&prop, i);
+    printf("name:%s\n", prop.name);
+    printf("totalGlobalMem:%lu GB\n", prop.totalGlobalMem / 1024 / 1024 / 1024);
+    printf("multiProcessorCount:%d\n", prop.multiProcessorCount);
+    printf("maxThreadsPerBlock:%d\n", prop.maxThreadsPerBlock);
+    printf("sharedMemPerBlock:%lu KB\n", prop.sharedMemPerBlock / 1024);
+    printf("major:%d,minor:%d\n", prop.major, prop.minor);
+  }
+}
+
+void *create_plot_ctx(uint64_t grids, uint32_t gpuid) {
+  checkCudaErrors_N(cudaSetDevice(gpuid));
+  auto ctx = new plot_ctx(grids);
+  return ctx;
+}
+
+void destroy_plot_ctx(void *ctx) {
+  // if (ctx)
+    delete ((plot_ctx *)ctx);
+}
+
+void reset_plot(void *ctx) {
+  if (ctx)
+    ((plot_ctx *)ctx)->reset();
+}
+
+int run_plot(void *ctx, uint64_t addr, uint64_t start_nr, uint64_t *num) {
+  if (ctx) {
+    return ((plot_ctx *)ctx)->plot2(addr, start_nr, *num);
+  }
+
+  return -1;
 }
