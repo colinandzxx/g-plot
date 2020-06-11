@@ -1,6 +1,6 @@
-# g-sphshabal-sample
+# g-plot
 
-A sample of sphshabal implement by CUDA.
+A plot library implemented based on CUDA and sph Shabal.
 
 ## dependence
 ### cuda
