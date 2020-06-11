@@ -13,7 +13,7 @@ set(CTEST_OUTPUT_ON_FAILURE ON)
 # set(CMAKE_SKIP_BUILD_RPATH ON)
 
 # libsphshabal
-add_subdirectory(shabal)
+add_subdirectory(plot)
 
 # -------------------
 # test
@@ -31,7 +31,7 @@ foreach(_test_file ${TEST_SRCS})
   target_link_libraries(${_test_name} ${GTEST_BOTH_LIBRARIES}
                         ${CMAKE_THREAD_LIBS_INIT})
   target_link_libraries(${_test_name} plot)
-  target_include_directories(${_test_name} PUBLIC ${PROJECT_SOURCE_DIR}/shabal/include)
+  target_include_directories(${_test_name} PUBLIC ${PROJECT_SOURCE_DIR}/plot/include)
   add_test(${_test_name} ${_test_name})
   # set_tests_properties(${_test_name} PROPERTIES TIMEOUT 5)
 endforeach()
