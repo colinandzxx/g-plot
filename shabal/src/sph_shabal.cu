@@ -727,7 +727,7 @@ __device__ void sph_shabal512_addbits_and_close(void *cc, unsigned ub,
 #define PLOT_SIZE (NONCE_SIZE + BASE_SIZE)
 #define HASH_CAP 4096ul
 
-#define THREADS_PER_BLOCK 1024ul
+#define THREADS_PER_BLOCK 512ul
 #define GIRD_NUM 10ul
 
 #define MAX_NAME_LEN 256
@@ -767,7 +767,7 @@ inline int gpuAssert(cudaError_t code, const char *file, int line,
   return code;
 }
 
-__global__ void sha(uint8_t *g_out) {
+__global__ void testSha(uint8_t *g_out) {
   uint32_t global_id = blockDim.x * blockIdx.x + threadIdx.x;
   uint32_t gid = global_id / THREADS_PER_BLOCK;
   uint32_t bid = global_id % THREADS_PER_BLOCK;
@@ -775,8 +775,69 @@ __global__ void sha(uint8_t *g_out) {
   for (int i = 0; i < SCOOPS_PER_NONCE * 2; i++) {
     sph_shabal256_context cc;
     sph_shabal256_init(&cc);
-    char str[] = "123";
+    char str[] =
+        "1231231231231231231231231231231231231231231231231231231231231231231231"
+        "2312312312312312312312312312312312312312312312312312312312312312312312"
+        "3123123123123123123123123123123123123123123123123123123123123123123123"
+        "1231231231231231231231231231231231231231231231231231231231231231231231"
+        "2312312312312312312312312312312312312312312312312312312312312312312312"
+        "3123123123123123123123123123123123123123123123123123123123123123123123"
+        "1231231231231231231231231231231231231231231231231231231231231231231231"
+        "2312312312312312312312312312312312312312312312312312312312312312312312"
+        "3123123123123123123123123123123123123123123123123123123123123123123123"
+        "1231231231231231231231231231231231231231231231231231231231231231231231"
+        "2312312312312312312312312312312312312312312312312312312312312312312312"
+        "3123123123123123123123123123123123123123123123123123123123123123123123"
+        "1231231231231231231231231231231231231231231231231231231231231231231231"
+        "2312312312312312312312312312312312312312312312312312312312312312312312"
+        "3123123123123123123123123123123123123123123123123123123123123123123123"
+        "1231231231231231231231231231231231231231231231231231231231231231231231"
+        "2312312312312312312312312312312312312312312312312312312312312312312312"
+        "3123123123123123123123123123123123123123123123123123123123123123123123"
+        "1231231231231231231231231231231231231231231231231231231231231231231231"
+        "2312312312312312312312312312312312312312312312312312312312312312312312"
+        "3123123123123123123123123123123123123123123123123123123123123123123123"
+        "1231231231231231231231231231231231231231231231231231231231231231231231"
+        "2312312312312312312312312312312312312312312312312312312312312312312312"
+        "3123123123123123123123123123123123123123123123123123123123123123123123"
+        "1231231231231231231231231231231231231231231231231231231231231231231231"
+        "2312312312312312312312312312312312312312312312312312312312312312312312"
+        "3123123123123123123123123123123123123123123123123123123123123123123123"
+        "1231231231231231231231231231231231231231231231231231231231231231231231"
+        "2312312312312312312312312312312312312312312312312312312312312312312312"
+        "3123123123123123123123123123123123123123123123123123123123123123123123"
+        "1231231231231231231231231231231231231231231231231231231231231231231231"
+        "2312312312312312312312312312312312312312312312312312312312312312312312"
+        "3123123123123123123123123123123123123123123123123123123123123123123123"
+        "1231231231231231231231231231231231231231231231231231231231231231231231"
+        "2312312312312312312312312312312312312312312312312312312312312312312312"
+        "3123123123123123123123123123123123123123123123123123123123123123123123"
+        "1231231231231231231231231231231231231231231231231231231231231231231231"
+        "2312312312312312312312312312312312312312312312312312312312312312312312"
+        "3123123123123123123123123123123123123123123123123123123123123123123123"
+        "1231231231231231231231231231231231231231231231231231231231231231231231"
+        "2312312312312312312312312312312312312312312312312312312312312312312312"
+        "3123123123123123123123123123123123123123123123123123123123123123123123"
+        "1231231231231231231231231231231231231231231231231231231231231231231231"
+        "2312312312312312312312312312312312312312312312312312312312312312312312"
+        "3123123123123123123123123123123123123123123123123123123123123123123123"
+        "1231231231231231231231231231231231231231231231231231231231231231231231"
+        "2312312312312312312312312312312312312312312312312312312312312312312312"
+        "3123123123123123123123123123123123123123123123123123123123123123123123"
+        "1231231231231231231231231231231231231231231231231231231231231231231231"
+        "2312312312312312312312312312312312312312312312312312312312312312312312"
+        "3123123123123123123123123123123123123123123123123123123123123123123123"
+        "1231231231231231231231231231231231231231231231231231231231231231231231"
+        "2312312312312312312312312312312312312312312312312312312312312312312312"
+        "3123123123123123123123123123123123123123123123123123123123123123123123"
+        "1231231231231231231231231231231231231231231231231231231231231231231231"
+        "2312312312312312312312312312312312312312312312312312312312312312312312"
+        "3123123123123123123123123123123123123123123123123123123123123123123123"
+        "1231231231231231231231231231231231231231231231231231231231231231231231"
+        "231231231231231231231231231231231231";
     sph_shabal256(&cc, str, sizeof(str) - 1);
+    // memcpy(g_out, "123", 3);
+    // sph_shabal256(&cc, g_out, 3);
     char dst[32] = {};
     sph_shabal256_close(&cc, &g_out[global_id * HASH_SIZE]);
     // sph_shabal256_close(&cc, dst);
@@ -800,7 +861,7 @@ int testCuda() {
     return 1;
   }
 
-  sha<<<GIRD_NUM, THREADS_PER_BLOCK>>>(g_out);
+  testSha<<<GIRD_NUM, THREADS_PER_BLOCK>>>(g_out);
   auto err = cudaGetLastError();
   if (err != cudaSuccess) {
     printf("E02: %s\n", cudaGetErrorString(err));
@@ -818,14 +879,12 @@ int testCuda() {
 
   cudaFree(g_out);
 
-  for (int i = 0; i < GIRD_NUM * THREADS_PER_BLOCK * 32; i += 32)
-  {
-    for (int j = 0; j < 32; j++)
-    {
-      printf("%02x", out[i + j]);
-    }
-    printf("\n");
-  }
+  // for (int i = 0; i < GIRD_NUM * THREADS_PER_BLOCK * 32; i += 32) {
+  //   for (int j = 0; j < 32; j++) {
+  //     printf("%02x", out[i + j]);
+  //   }
+  //   printf("\n");
+  // }
 
   cudaDeviceReset();
   return 0;
@@ -833,55 +892,45 @@ int testCuda() {
 
 __global__ void plot_poc1(uint64_t *addr, uint64_t *start_nr, uint8_t *g_sols) {
   uint32_t global_id = blockDim.x * blockIdx.x + threadIdx.x;
-  uint32_t gid = global_id / THREADS_PER_BLOCK;
-  uint32_t bid = global_id % THREADS_PER_BLOCK;
+  // uint32_t gid = global_id / THREADS_PER_BLOCK;
+  // uint32_t bid = global_id % THREADS_PER_BLOCK;
 
-  // uint64_t nonce_nr = *start_nr + global_id;
-  // uint8_t *sol = &g_sols[global_id * PLOT_SIZE];
-  // uint64_t swap_addr = SPH_SWAP64(*addr);
-  // memcpy(&sol[NONCE_SIZE], &swap_addr, 8);
-  // uint64_t swap_nonce_nr = SPH_SWAP64(nonce_nr);
-  // memcpy(&sol[NONCE_SIZE + ADDR_SIZE], &swap_nonce_nr, 8);
+  uint64_t nonce_nr = *start_nr + global_id;
+  uint8_t *sol = &g_sols[global_id * PLOT_SIZE];
+  uint64_t swap_addr = SPH_SWAP64(*addr);
+  memcpy(&sol[NONCE_SIZE], &swap_addr, 8);
+  uint64_t swap_nonce_nr = SPH_SWAP64(nonce_nr);
+  memcpy(&sol[NONCE_SIZE + ADDR_SIZE], &swap_nonce_nr, 8);
 
-  // sph_shabal256_context cc;
-  // for (int i = NONCE_SIZE; i > 0; i -= HASH_SIZE) {
-  //   sph_shabal256_init(&cc);
-  //   auto len = PLOT_SIZE - i;
-  //   if (len > HASH_CAP) {
-  //     len = HASH_CAP;
-  //   }
-  //   sph_shabal256(&cc, &sol[i], len);
-  //   sph_shabal256_close(&cc, &sol[i - HASH_SIZE]);
-  // }
-  // uint8_t final[HASH_SIZE];
-  // sph_shabal256_init(&cc);
-  // sph_shabal256(&cc, sol, PLOT_SIZE);
-  // sph_shabal256_close(&cc, final);
-
-  // for (int i = 0; i < NONCE_SIZE; i++) {
-  //   sol[i] = sol[i] ^ final[i % HASH_SIZE];
-  // }
-
-  for (int i = 0; i < SCOOPS_PER_NONCE * 2; i++) {
-    sph_shabal256_context cc;
+  sph_shabal256_context cc;
+  for (int i = NONCE_SIZE; i > 0; i -= HASH_SIZE) {
     sph_shabal256_init(&cc);
-    char str[] = "123";
-    sph_shabal256(&cc, str, sizeof(str) - 1);
-    sph_shabal256_close(&cc, &g_sols[global_id * PLOT_SIZE]);
-    // char dst[32] = {};
-    // sph_shabal256_close(&cc, dst);
+    auto len = PLOT_SIZE - i;
+    if (len > HASH_CAP) {
+      len = HASH_CAP;
+    }
+    sph_shabal256(&cc, &sol[i], len);
+    sph_shabal256_close(&cc, &sol[i - HASH_SIZE]);
+  }
+  uint8_t final[HASH_SIZE];
+  sph_shabal256_init(&cc);
+  sph_shabal256(&cc, sol, PLOT_SIZE);
+  sph_shabal256_close(&cc, final);
+
+  for (int i = 0; i < NONCE_SIZE; i++) {
+    sol[i] = sol[i] ^ final[i % HASH_SIZE];
   }
 }
 
 struct plotter_ctx {
-  uint32_t grids;
+  uint64_t grids;
   uint8_t *sols;
 
   uint64_t *g_addr;
   uint64_t *g_start_nr;
   uint8_t *g_sols;
 
-  plotter_ctx(const uint32_t grids) : grids(grids) {
+  plotter_ctx(const uint64_t grids) : grids(grids) {
     sols = (uint8_t *)malloc(PLOT_SIZE * THREADS_PER_BLOCK * grids);
     assert(sols != NULL);
 
@@ -915,7 +964,8 @@ struct plotter_ctx {
         cudaMalloc((void **)&g_sols, PLOT_SIZE * THREADS_PER_BLOCK * grids));
   }
 
-  int plot(uint64_t addr, uint64_t start_nr) {
+  int plot(uint64_t addr, uint64_t start_nr, uint64_t &num) {
+    num = 0;
     checkCudaErrors(
         cudaMemcpy(g_addr, &addr, sizeof(uint64_t), cudaMemcpyHostToDevice));
     checkCudaErrors(cudaMemcpy(g_start_nr, &start_nr, sizeof(uint64_t),
@@ -924,10 +974,11 @@ struct plotter_ctx {
     plot_poc1<<<grids, THREADS_PER_BLOCK>>>(g_addr, g_start_nr, g_sols);
     cudaDeviceSynchronize();
 
-    checkCudaErrors(cudaMemcpy(sols, &g_sols,
+    checkCudaErrors(cudaMemcpy(sols, g_sols,
                                PLOT_SIZE * THREADS_PER_BLOCK * grids,
                                cudaMemcpyDeviceToHost));
-    return grids * THREADS_PER_BLOCK;
+    num = grids * THREADS_PER_BLOCK;
+    return 0;
   }
 };
 
@@ -948,14 +999,26 @@ void GPU_Count() {
 }
 
 void testPlot(void *buffer) {
-  plotter_ctx *ctx = new plotter_ctx(4);
+  plotter_ctx *ctx = new plotter_ctx(10);
   ctx->reset();
-  auto num = ctx->plot(1ul, 0ul);
+  uint64_t num = 0;
+  auto ret = ctx->plot(1ul, 0ul, num);
+  if (ret != 0) {
+    printf("last err: %s\n", LAST_ERROR_REASON);
+  }
   if (buffer) {
-    for (int i = 0; i < num; i++) {
+    for (uint64_t i = 0; i < num; i++) {
       memcpy(&((uint8_t *)buffer)[NONCE_SIZE * i], &ctx->sols[PLOT_SIZE * i],
              NONCE_SIZE);
+      ;
     }
+
+    // for (uint64_t i = 0; i < NONCE_SIZE * num; i += NONCE_SIZE) {
+    //   for (int j = 0; j < HASH_SIZE; j++) {
+    //     printf("%02x", ((uint8_t *)buffer)[i + j]);
+    //   }
+    //   printf("\n");
+    // }
   }
   free(ctx);
 }
