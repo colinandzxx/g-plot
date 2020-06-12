@@ -16,7 +16,7 @@ TEST(shabal, 01)
     printf("tm: %lf\n", (double)(end - start) / CLOCKS_PER_SEC);
 }
 
-TEST(shabal, plot_ctx)
+TEST(plot, plot_ctx)
 {
     clock_t start = clock();
     void *buffer = malloc(10240ul * 8192 * 32);
@@ -35,7 +35,7 @@ TEST(shabal, plot_ctx)
     fclose(fp);
 }
 
-TEST(shabal, test_C_Process)
+TEST(plot, test_C_Process)
 {
     test_C_Process();
 }

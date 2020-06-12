@@ -22,7 +22,6 @@
 #define PLOT_SIZE (NONCE_SIZE + BASE_SIZE)
 #define HASH_CAP 4096ul
 
-#define THREADS_PER_BLOCK 512ul
 #define GIRD_NUM 10ul
 
 #define MAX_NAME_LEN 256
@@ -348,18 +347,26 @@ void *create_plot_ctx(uint64_t grids, uint32_t gpuid) {
 
 void destroy_plot_ctx(void *ctx) {
   // if (ctx)
-    delete ((plot_ctx *)ctx);
+  delete ((plot_ctx *)ctx);
 }
 
-void reset_plot(void *ctx) {
+void reset_plot_ctx(void *ctx) {
   if (ctx)
     ((plot_ctx *)ctx)->reset();
 }
 
-int run_plot(void *ctx, uint64_t addr, uint64_t start_nr, uint64_t *num) {
+int run_plot_ctx(void *ctx, uint64_t addr, uint64_t start_nr, uint64_t *num) {
   if (ctx) {
-    return ((plot_ctx *)ctx)->plot2(addr, start_nr, *num);
+    int ret = ((plot_ctx *)ctx)->plot2(addr, start_nr, *num);
+
+    return ret;
   }
 
   return -1;
+}
+
+const uint8_t *get_plot_ctx_sols(void *ctx) {
+  if (ctx)
+    return ((plot_ctx *)ctx)->sols;
+  return NULL;
 }
